@@ -1,0 +1,207 @@
+int capacity_{0};
+list<pair<int,int>> cache_;
+unordered_map<int,list<pair<int,int>>::iterator> map_;
+
+int get_key(int key) {
+    auto it = map_.find(key);
+    if(it == map_.end()) return -1;
+    cahce_.splice(cache_.begin(),cache_,it->second);
+    return it->second->second;
+}
+
+void put_key(int key,int value) {
+    auto it = map_.find(key);
+    if(it != map_.end()) {
+        it->second->second = value;
+        cahce_.splice(cache_.begin(),cache_,it->second);
+        return;
+    }
+    if(cache_.size() == capacity_) {
+        const auto& tmp = cache_.back();
+        map_.erase(tmp->first);
+        cache_.erase(tmp);
+    }
+    cache_.emplace_front(key,value);
+    map_[key] = cache_.begin();
+}
+
+word search
+
+bool exist(vector<vector<char>>& board, string word) {
+    if(board.empty()) return false;
+    h_ = board.size();
+    w_ = board[0].size();
+    for(int i=0;i<w_;i++) {
+        for(int j=0;j<h_;j++) {
+            if(search(board,word,0,i,j)) return true;
+        }
+    }
+    return false;
+}
+
+int h_;
+int w_;  
+
+bool search(vector<vector<char>>& board,const string& word,int d,int i,int j) 
+{
+    if(i<0 || i==w_ || j<0 || j== h_ ||word[d]!=board[j][i]) {
+         return false;
+    }
+    if(d == word.length()-1) return true;
+    char cur = board[j][i];
+    board[j][i] = 0;
+    bool found = search(board,word,d+1,i-1,j)
+              || search(board,word,d+1,i,j-1)
+              || search(board,word,d+1,i+1,j)
+              || search(board,word,d+1,i,j+1);
+    board[j][i] = cur;
+    return found;
+}
+
+
+// phone number
+vector<string> letterCombinations(string digits) {
+    if(digits.length() == 0) return {};
+    vector<vector<char>> d(10);
+    d[0] = {' '};
+    d[1] = {};
+    d[2] = {'a','b','c'};
+    d[3] = {'d','e','f'};
+    d[4] = {'g','h','i'};
+    d[5] = {'j','k','l'};
+    d[6] = {'m','n','o'};
+    d[7] = {'p','q','r','s'};
+    d[8] = {'t','u','v'};
+    d[9] = {'w','x','y','z'};
+    vector<string> res;
+    string cur = "";
+    dfs(digits,d,0,res,cur);
+    return res;
+}
+
+void dfs(const string& digits,const vector<vector<char>>& d,int l, vector<string>& res,string cur){
+    if(l == digits.size()){
+        res.push_back(cur);
+        return;
+    }
+    for(const auto& c : d[digits[l]-'0']){
+        cur.push_back(c);
+        dfs(digits,d,l+1,res,cur);
+        cur.pop_back();
+    }
+}
+
+
+vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
+    std::sort(candidates.begin(),candidates.end());
+    vector<int> cur;
+    dfs(candidates,target,0,cur);
+    return res_;
+}
+vector<vector<int>> res_;
+void dfs(vector<int>& candidates, int target,int d,vector<int> cur){
+    if(target == 0){
+        res_.push_back(cur);
+        return;
+    }
+    for(int i=d;i<candidates.size();i++){
+        if(candidates[i] > target) break;
+        cur.push_back(candidates[i]);
+        dfs(candidates,target-candidates[i],i,cur);
+        cur.pop_back();
+    }
+}
+
+
+
+
+int ladderLength(string beginWord, string endWord, vector<string>& wordList) {
+    unordered_set<string> wl(wordList.begin(),wordList.end());
+    if(!wl.count(endWord)) return 0;
+    queue<string> qs;
+    queue<string> qe;
+    qs.push(beginWord);
+    qe.push(endWord);
+    int l = beginWord.length();
+    int step = 0;
+    
+    while(!qs.empty()&&!qe.empty()) {
+        if(qs.size() > qe.size()) swap(qs,qe);
+        step++;
+        for(int i=0;i<qs.size();i++){
+            auto& w = qs.front();
+            qs.pop();
+            for(int j=0;j<l;j++){
+                char tmp= w[j];
+                for(char c='a';c<='z';c++){
+                    w[j] = c;
+                    if(qe.count(w)) return step+1;
+                    if(!wl.count(w)) continue;
+                    qs.push(w);
+                    w[j] = tmp;
+                }
+            }
+        }
+    }
+    return 0;
+}
+
+
+int numIslands(vector<vector<char>>& grid) {
+    int num = 0;
+    if(grid.empty()) return 0;
+    int y = grid.size();
+    int x = grid[0].size();
+    for(int i=0;i<y;i++){
+        for(int j=0;j<x;j++){
+            if(grid[i][j] == '1'){
+                num++;
+                dfs(grid,i,j,y,x);
+            }
+        }
+    }
+    return num;
+}
+
+void dfs(vector<vector<char>>& grid,int y,int x,int m,int n)
+{   
+    if(y<0 || y>=m || x<0 || x>=n || grid[y][x] == '0') return;
+    grid[y][x] = '0';
+    dfs(grid,y+1,x,m,n);
+    dfs(grid,y-1,x,m,n);
+    dfs(grid,y,x+1,m,n);
+    dfs(grid,y,x-1,m,n);
+}
+
+
+int longestIncreasingPath(vector<vector<int>>& matrix) {
+    if(matrix.empty()) return 0;
+    int y = matrix.size();
+    int x = matrix[0].size();
+    dp_= vector<vector<int>>(y,vector<int>(x,0));
+    int ans = 0;
+    for(int i=0;i<y;++i){
+        for(int j=0;j<x;++j){
+            ans = max(ans,search(matrix,i,j,y,x));
+        }
+    }
+    return ans;
+}
+vector<vector<int>> dp_;
+int search(const vector<vector<int>>& matrix,int y,int x,int m,int n)
+{
+    if(y<0 || y>=m || x<0 || x>=n) return 0;
+    if(dp_[y][x] != 0) return dp_[y][x];
+    static int arr[5] = {0,1,0,-1,0};
+    int ans = 1;
+    for(int i=0;i<4;i++){
+        int ny = y+arr[i];
+        int nx = x+arr[i+1];
+        if(matrix[ny][nx] > matrix[y][x])
+        {
+            ans = max(ans,search(matrix,ny,nx,m,n));
+        }
+    }
+    dp_[y][x] = ans;
+    return ans;
+}

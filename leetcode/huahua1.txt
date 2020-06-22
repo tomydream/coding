@@ -1,0 +1,213 @@
+// Encodes a tree to a single string.
+    string serialize(TreeNode* root) {
+        string s;
+        encode(root,s);
+        return s;
+    }
+
+    // Decodes your encoded data to tree.
+    TreeNode* deserialize(string data) {
+        int pos=0;
+        TreeNode* node = decode(data,pos,INT_MIN,INT_MAX);
+        return node;
+    }
+    
+    void encode(TreeNode* root, string& s)
+    {
+        if(root == nullptr) return;
+        s.append(reinterpret_cast<char*>(&root->val),sizeof(root->val));
+        encode(root->left,s);
+        encode(root->right,s);
+    }
+    
+    TreeNode* decode(string& s,int& pos,int cur_min,int cur_max)
+    {
+        if(pos>=s.size()) return nullptr;
+        int val = *reinterpret_cast<int*>(s.data()+pos);
+        if(val < cur_min || val > cur_max) return nullptr;
+        pos+=sizeof(val);
+        TreeNode* node = new TreeNode(val);
+        node->left = decode(s,pos,cur_min,val);
+        node->right = decode(s,pos,val,cur_max);
+        return node;
+    }
+    
+    
+    
+    
+// delete a node in BST
+// [5,3,6,2,4,null,7]
+TreeNode* deleteNode(TreeNode* root, int key) {
+    if(root == nullptr) return nullptr;
+    if(root->val <key) {
+        root->right=deleteNode(root->right,key);
+        return root;
+    } else if(root->val > key) {
+        root->left=deleteNode(root->left,key);
+        return root;
+    } else {
+        if(root->left == nullptr){
+            TreeNode* new_node = root->right;
+            delete root;
+            return new_node;
+        } else if(root->right == nullptr){
+            TreeNode* new_node = root->left;
+            delete root;
+            return new_node;
+        } else {
+            TreeNode *tmp = root->right;
+            while(tmp->left != nullptr) {tmp = tmp->left};
+            root->val = tmp->val;
+            tmp->val = key;
+            root->right = deleteNode(root->right,key);
+            return root;
+        }
+    }
+    return root;
+}
+
+
+// the game winner
+bool PredictTheWinner(vector<int>& nums) {
+    mdiff_ = vector<int>(nums.size()*nums.size(),0);
+    return getMaxDiffScore(nums,0,nums.size()-1) >= 0;
+}
+
+int getMaxDiffScore(const vector<int> &nums,int l,int r){
+    if(l == r) return nums[l];
+    return max(nums[l] - getMaxDiffScore(nums,l+1,r),nums[r] - getMaxDiffScore(nums,l,r-1));
+}
+
+vector<int> mdiff_;
+int getMaxDiffScore(const vector<int> &nums,int l,int r){
+    if(l == r) return nums[l];
+    int k=l*nums.size()+r;
+    if(mdiff_[k] != 0) return mdiff_[k];
+    mdiff_[k] = max(nums[l] - getMaxDiffScore(nums,l+1,r),nums[r] - getMaxDiffScore(nums,l,r-1));
+    return mdiff_[k];
+}
+
+
+// diameter of 
+int ans_ = 0;
+int LP(TreeNode* root)
+{
+    if(root == nullptr) return -1;
+    int l = LP(root->left);
+    int r = LP(root->right);
+    ans_ = max(ans_,2+l+r);
+    return max(l+1,r+1);
+}
+
+// duplicate suntree
+vector<TreeNode*> findDuplicateSubtrees(TreeNode* root) {
+    vector<TreeNode*> ans;
+    serialize(root,ans);
+    return ans;
+}
+unordered_map<string,int> count_map_;
+string serialize(TreeNode* root,vector<TreeNode*> &ans) {
+    if(root == nullptr) return "#";
+    string key = to_string(root->val)+"," + serialize(root->left,ans) + "," + serialize(root->right,ans);
+    if(++count_map_[key] == 2){
+        ans.push_back(root);
+    }
+    return key;
+}
+
+
+
+// prefix sufix
+
+
+// distance k
+vector<int> distanceK(TreeNode* root, TreeNode* target, int K) {
+    dis(root,target,K);
+    return ans;
+}
+
+vector<int> ans;
+
+int dis(TreeNode* root,TreeNode* target,int k){
+    if(root == nullptr)  return -1;
+    if(root == target){
+        collect(root,k);
+        return 0;
+    }
+    int l = dis(root->left,target,k);
+    int r = dis(root->right,target,k);
+    if(l>0){
+        if(k == l+1){
+            ans.push_back(root->val);
+        }
+        collect(root->right,k-l-2);
+        return l+1;
+    }
+    if(r>0){
+        if(k == r+1){
+            ans.push_back(root->val);
+        }
+        collect(root->left,k-r-2);
+        return r+1;
+    }
+    return -1;
+}
+
+void collect(TreeNode* root,int d){
+    if(root == nullptr || d < 0) return;
+    if(d == 0) ans.push_back(root->val);
+    collect(root->left,d-1);
+    collect(root->right,d-1);
+}
+
+
+TreeNode* subtreeWithAllDeepest(TreeNode* root) {
+    auto p = depth(root);
+    return p.second;
+}
+
+pair<int,TreeNode*> depth(TreeNode* root) {
+    if (root == nullptr) return {-1,nullptr};
+    auto lp = depth(root->left);
+    auto rp = depth(root->right);
+    if(lp.first == rp.first) return {lp.first + 1,root};
+    return {max(lp.first,rp.first)+1,lp.first>rp.first?lp.second:rp.second};
+}
+
+
+// my calender I
+bool book(int start, int end) {
+    if(ranges_.empty) {
+        ranges_.emplace(start,end);
+        return true;
+    }
+    auto it = ranges_.upper_bound(start);
+    if(it!=ranges_.begin()) {
+        if(prev(it)->second>start) return false; 
+    }
+    if(it!=ranges_.end()){
+        if(it->first<end) return false;
+    }
+    ranges_.emplace(start,end);
+    return true;
+    
+}
+map<int,int> ranges_;
+
+//  range module
+void addRange(int left, int right) {
+    vector<pair<int,int>> new_range;
+    for(auto &p : ranges_){
+        
+    }
+}
+
+bool queryRange(int left, int right) {
+
+}
+
+void removeRange(int left, int right) {
+
+}
+
+vector<pair<int,int>> ranges_;
