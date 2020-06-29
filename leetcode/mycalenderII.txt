@@ -1,0 +1,17 @@
+
+bool book(int start, int end) {
+    calender_[start]+=1;
+    calender_[end]-=1;
+    int value=0;
+    for(auto & it:calender_){
+        value += it.second;
+        if(value>=3){
+            calender_[start]-=1;
+            calender_[end]+=1;
+            return false;
+        }
+    }
+    return true;
+}
+
+std::map<int,int> calender_;
