@@ -1,0 +1,33 @@
+int coinChange(vector<int>& coins, int amount) {
+    if(coins.empty()) return -1;
+    vector<int> dp = vector(amount+1,amount+1);
+    dp[0]=0;
+    for(auto coin : coins) {
+        for(int i= coin;i<=amount;i++){
+            dp[i] = min(dp[i],dp[i-coin]+1);
+        }
+    }
+    return dp[amount] == amount + 1?-1:dp[amount];
+}
+
+int coinChange(vector<int>& coins, int amount) {
+    if(coins.empty()) return -1;
+    std::sort(coins.rbegin(),coins.rend());
+    int ans = INT_MAX;
+    search(coins,amount,0,ans);
+    return ans == INT_MAX?-1:ans;
+}
+
+void search(const vector<int>& coins,int amount,int idx_coin,int count,int& ans){
+    if(idx_coin>=coins.size()) return;
+    int coin = coins[idx_coin];
+    if(amount%coin == 0){
+        ans = min(ans,count + amount/coin);
+        return;
+    }else {
+        for(int k=amount/coin&&count+k<ans;k>=0;k--){
+            search(coins,amount-k*coin,idx_coin+1,count+k,ans);
+        }
+    }
+    return;
+}
