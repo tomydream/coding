@@ -25,7 +25,7 @@ void search(const vector<int>& coins,int amount,int idx_coin,int count,int& ans)
         ans = min(ans,count + amount/coin);
         return;
     }else {
-        for(int k=amount/coin&&count+k<ans;k>=0;k--){
+        for(int k=amount/coin;k>=0&&count+k<ans;k--){
             search(coins,amount-k*coin,idx_coin+1,count+k,ans);
         }
     }
