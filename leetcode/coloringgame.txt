@@ -1,0 +1,19 @@
+bool btreeGameWinningMove(TreeNode* root, int n, int x) {
+    GetNodeNum(root,x);
+    return max(max(l_,r_),n-1-l_-r_)> n/2;
+}
+
+// 主要是要分出三种情况来
+int l_{0};
+int r_{0};
+int GetNodeNum(TreeNode* root,int x)
+{
+    if(root == nullptr) return 0;
+    int l = GetNodeNum(root->left,x);
+    int r = GetNodeNum(root->right,x);
+    if(root->val == x){
+        l_=l;
+        r_=r;
+    }
+    return 1 + l + r;
+}

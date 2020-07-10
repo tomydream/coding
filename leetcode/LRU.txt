@@ -1,0 +1,28 @@
+void put(int key,int value)
+{
+    auto itr =  map_.find(key);
+    if(itr != map_.end()){
+        itr->second->second = value;
+        cache_.splice(cache_.begin(),cache_,itr->second);
+        return ;
+    }
+    if(capacity_ == map_.size()){
+        const auto& ele = cache_.back();
+        map_.erase(ele.first);
+        cache_.pop_back();
+    }
+    cache_.emplace_front(key,value);
+    map_[key] = cache_.begin();
+}
+
+int get(int key)
+{
+    auto itr =  map_.find(key);
+    if(itr == map_.end()) return -1;
+    cache_.splice(cache_.begin(),cache_,itr->second);
+    return itr->second->second;
+}
+
+unordered_map<int,list<std::pair<int,int>>::iterator> map_;
+list<std::pair<int,int>> cache_;
+int capacity_{0};
