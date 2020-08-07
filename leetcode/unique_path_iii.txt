@@ -1,0 +1,25 @@
+int uniquePathsIII(vector<vector<int>>& grid) {
+    int n= 1;
+    int sx=-1;
+    int sy=-1;
+    for(int i=0;i<grid.size();i++){
+        for(int j=0;j<grid[0].size();j++){
+            if(grid[i][j]==0) n++;
+            if(grid[i][j]==1) {
+                sx=j;
+                sy=i;
+            }
+        }
+    }
+    return dfs(grid,sx,sy,n);
+}
+
+int dfs(vector<vector<int>>& grid,int sx,int sy,int n)
+{
+    if(sx<0 || sz>=grid[0].size() || sy<0 || y>=grid.size() || grid[sy][sx]==-1) return 0;
+    if(grid[sy][sx]==2) return n==0;
+    grid[sy][sx] = -1;
+    int path = dfs(grid,sx-1,sy,n-1) + dfs(grid,sx+1,sy,n-1) +dfs(grid,sx,sy-1,n-1) +dfs(grid,sx,sy+1,n-1);
+    grid[sy][sx] = 0;
+    return path;
+}
