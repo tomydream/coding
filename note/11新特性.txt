@@ -1,0 +1,105 @@
+1. initiallist
+vector<int> vec{1,2,3}
+
+2. auto
+
+3.range for
+
+4.nullptr
+
+5. 
+enum class ship {
+    A,
+    B
+};
+
+6.
+class base {
+public:
+	virtual void fun1(int);
+	virtual void fun2() const;
+	void fun3(int);
+};
+
+class son :public base {
+	//c++ 03 存在隐患
+	/*
+	void fun1(float);  //不小心写错了参数,ok 编译通过，create a new func
+	void fun2();       //不小心少写了const,ok 编译通过，create a new func
+	void fun3();
+	*/
+
+	// but in c++ 11 更安全清晰
+	void fun1(float) override; //编译Error: no func to override
+	void fun2() override;      //编译Error: no func to override
+	void fun3() override;      //编译Error: no func to override			
+};
+
+
+7.final
+// 禁止类被继承 禁止虚函数被重写
+
+8. // default  强制生成默认构造函数
+
+class CPoint2D {
+public:
+	CPoint2D(double x_,double y_) {
+		x = x_;
+		y = y_;
+	}
+	double x;
+	double y;
+};
+
+int main(){	
+	CPoint2D pt;//编译报错，不存在默认构造函数，因为编译器不再生成	
+}
+
+class CPoint2D {
+public:
+	CPoint2D(double x_,double y_) {
+		x = x_;
+		y = y_;
+	}
+	CPoint2D() = default;//告诉编译器强制生成
+	double x;
+	double y;
+};
+
+int main(){	
+	CPoint2D pt;//ok	
+}
+
+9.// delete 放在函数后面 表示函数不能被调用
+class dog {
+public:
+	dog(int age_) {
+		age = age_;
+	}
+	dog(double) = delete;
+	int age;
+};
+
+int main(){	
+	dog(2);   //ok
+	dog(4.5); //not ok,已经删除的函数      如果不加delete这个会转换成int
+}
+
+
+10. // lambda
+int main(){
+
+	std::vector<CPoint2D> Pts{ {1,1},{3,3},{2,2} };
+	std::sort(begin(Pts), end(Pts), [](const CPoint2D& pt1, const CPoint2D& pt2) {
+		return  pt1.x < pt2.x;
+		});
+}
+
+[a,&b] 其中 a 以复制捕获而 b 以引用捕获。
+[this] 以引用捕获当前对象（ *this ）
+[&] 以引用捕获所有用于 lambda 体内的自动变量，并以引用捕获当前对象，若存在
+[=] 以复制捕获所有用于 lambda 体内的自动变量，并以引用捕获当前对象，若存在
+[] 不捕获，大部分情况下不捕获就可以了
+
+
+11. // 智能指针
