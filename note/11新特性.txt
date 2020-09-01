@@ -103,3 +103,33 @@ int main(){
 
 
 11. // 智能指针
+智能指针其实是个模板类,在构造时初始化,在拷贝构造时增加引用计数,在析构时减少引用计数,需要避免自拷贝
+通过get获取管理对象
+unique_ptr 当其离开作用域时自动析构。资源所有权的转移只能通过std::move()而不能通过赋值
+std::unique_ptr<int> p = std::make_unique<int>(3);
+void func2(int* p) {
+	*p = 10;
+}
+
+int main() {
+	std::unique_ptr<int> pInt = std::make_unique<int>(3);
+	func2(pInt.get());
+}
+
+share_ptr
+std::shared_ptr<int> pInt = std::make_shared<int>(3);
+// 要避免循环引用的情况,将其中一个改成 weak_ptr
+// weak_ptr只引用不计数
+struct A;
+struct B;
+struct B {
+	std::shared_ptr<int> pA;
+};
+struct A {
+	std::shared_ptr<int> pB;
+};
+
+
+12. std::function
+// 通过std::function对C++中各种可调用实体（普通函数、Lambda表达式、函数指针、以及其它函数对象等）的封装，形成一个新的可调用的std::function对象
+

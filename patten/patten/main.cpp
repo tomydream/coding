@@ -2,6 +2,7 @@
 #include "TestSingleton.h"
 #include "observer.h"
 #include "decorator.h"
+#include "functors.h"
 using namespace std;
 
 int main()
@@ -18,5 +19,10 @@ int main()
     auto* wife = new Wife();
     auto* da = new DecoratorA(wife);
     da->Makeup();
+
+    MyPlust my_plus;
+    cout << "my_plus:" << my_plus(3,5) << endl;
+    cout << "my_plus显示调用:" << MyPlust()(3,5) << endl;
+    cout << "my_plus显示调用:" << my_plus.operator()(3,5) << endl;
     return 0;
 }

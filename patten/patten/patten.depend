@@ -1,10 +1,23 @@
 # depslib dependency file v1.0
-1596629044 source:d:\git\coding\patten\patten\main.cpp
+1598234526 source:d:\git\coding\patten\patten\main.cpp
 	<iostream>
 	"TestSingleton.h"
+	"observer.h"
+	"decorator.h"
+	"functors.h"
 
 1596629955 d:\git\coding\patten\patten\testsingleton.h
 	"singleton.h"
 
 1596630857 d:\git\coding\patten\patten\singleton.h
+
+1596684943 d:\git\coding\patten\patten\observer.h
+	<vector>
+	<string>
+
+1597026202 d:\git\coding\patten\patten\decorator.h
+	<iostream>
+
+1598234374 d:\git\coding\patten\patten\functors.h
+	<iostream>
 
