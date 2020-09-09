@@ -37,6 +37,7 @@
 		<Unit filename="functors.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="observer.h" />
+		<Unit filename="pointer.h" />
 		<Unit filename="singleton.h" />
 		<Extensions />
 	</Project>

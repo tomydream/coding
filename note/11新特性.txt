@@ -128,8 +128,27 @@ struct B {
 struct A {
 	std::shared_ptr<int> pB;
 };
+weak_ptr< T > w	可以指向类型为T的对象的空week_ptr
+weak_ptr< T > w(sp)	与shared_ptr sp指向相同对象的weak_ptr。T必须能转换为sp指向的类型
+w = p	p可以是一个shared_ptr或一个weak_ptr。赋值后w与p共享对象
+w.reset()	将w置空
+w.use_count()	与w共享对象的shared_ptr的数量
+w.expired()	如果w.use_count()为0则返回true，否则返回false
+w.lock()	如果w.expired()为true，返回一个空shared_ptr，否则返回其绑定的shared_ptr
 
 
 12. std::function
 // 通过std::function对C++中各种可调用实体（普通函数、Lambda表达式、函数指针、以及其它函数对象等）的封装，形成一个新的可调用的std::function对象
 
+13. 引用问题
+规则1（引用折叠规则）：如果间接的创建一个引用的引用，则这些引用就会“折叠”。在所有情况下（除了一个例外），引用折叠成一个普通的左值引用类型。一种特殊情况下，引用会折叠成右值引用，即右值引用的右值引用， T&& &&。即
+左值引用与任意类型叠加都是左值引用
+
+
+X& &、X& &&、X&& &都折叠成X&
+X&& &&折叠为X&&
+规则2（右值引用的特殊类型推断规则）：当将一个左值传递给一个参数是右值引用的函数，且此右值引用指向模板类型参数(T&&)时，编译器推断模板参数类型为实参的左值引用
+
+forward的转换规则为:
+模板参数为引用类型T、T&&时，返回右值引用
+模板参数为引用类型T&时，返回左值引用。

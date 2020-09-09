@@ -3,6 +3,7 @@
 #include "observer.h"
 #include "decorator.h"
 #include "functors.h"
+#include "pointer.h"
 using namespace std;
 
 int main()
@@ -24,5 +25,8 @@ int main()
     cout << "my_plus:" << my_plus(3,5) << endl;
     cout << "my_plus显示调用:" << MyPlust()(3,5) << endl;
     cout << "my_plus显示调用:" << my_plus.operator()(3,5) << endl;
+
+
+    TestPointer();
     return 0;
 }
