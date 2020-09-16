@@ -152,3 +152,106 @@ X&& &&折叠为X&&
 forward的转换规则为:
 模板参数为引用类型T、T&&时，返回右值引用
 模板参数为引用类型T&时，返回左值引用。
+
+
+
+遇到这个关键字声明的变量，编译器对访问该变量的代码就不再进行优化，从而可以提供对特殊地址的稳定访问。
+声明时语法：int volatile vInt; 当要求使用 volatile 声明的变量的值的时候，系
+统总是重新从它所在的内存读取数据，即使它前面的指令刚刚从该处读取过数据。而且读取的数据立刻被保存。例如：
+所以说 volatile 可以保证对特殊地址的稳定访问。https://www.runoob.com/w3cnote/c-volatile-keyword.html
+有些变量是用 volatile 关键字声明的。当两个线程都要用到某一个变量且该变量的值会被改变时，应该用 volatile 声明，
+该关键字的作用是防止优化编译器把变量从内存装入 CPU 寄存器中。如果变量被装入寄存器，那么两个线程有可能一个使用内存中的变量，
+一个使用寄存器中的变量，这会造成程序的错误执行。volatile 的意思是让编译器每次操作该变量时一定要从内存中真正取出，而不是使用已经存在寄存器中的值，如下：
+bStop  =  TRUE;  
+while(  bStop  );  //等待上面的线程终止，如果bStop不使用volatile申明，那么这个循环将是一个死循环，因为bStop已经读取到了寄存器中，
+寄存器中bStop的值永远不会变成FALSE，加上volatile，程序在执行时，每次均从内存中读出bStop的值，就不会死循环了。
+
+
+1，const_cast这个操作符可以去掉变量const属性或者volatile属性的转换符，这样就可以更改const变量了。比如下面代码
+
+string str = "hello";
+char *_const = str.substr(0,3).c_str();//c_str()返回const char*类型，直接赋值给char *显然出错，这句话编译不能通过
+char *non_const = const_cast<char *> (str.substr(0,3).c_str());//将const属性移除，可以通过编译了
+
+2，静态转换，（1）主要用于内置数据类型之间的相互转换；（2）用于自定义类时，静态转换会判断转换类型之间的关系，
+如果转换类型之间没有任何关系，则编译器会报错，不可转换；（3）把void类型指针转为目标类型指针（不安全）。
+//static_cast.cpp
+//内置类型的转换
+double dValue = 12.12;
+float fValue = 3.14; // VS2013 warning C4305: “初始化”从“double”到“float”截断
+int nDValue = static_cast<int>(dValue); // 12
+int nFValue = static_cast<int>(fValue); // 3
+//自定义类的转换
+class A{};
+class B : public A{};
+class C{};
+void main(){
+    A *pA = new A;
+    B *pB = static_cast<B*>(pA); // 编译不会报错, B类继承于A类
+    pB = new B;
+    pA = static_cast<A*>(pB); // 编译不会报错, B类继承于A类
+    C *pC = static_cast<C*>(pA); // 编译报错, C类与A类没有任何关系。error C2440: “static_cast”: 无法从“A *”转换为“C *”
+}
+
+
+3，dynamic_cast操作符 可以安全的将父类转化为子类，子类转化为父类都是安全的。所以你可以用于安全的将基类转化为继承类，而且可以知道是否成功，如果强制转换的是指针类型，失败会返回NULL指针，如果强制转化的是引用类型，失败会抛出异常。
+dynamic_cast 转换符只能用于含有虚函数的类。用一个简单的代码例子可以看出
+（1）dynamic_cast是运行时处理的，运行时要进行类型检查，而其他三种都是编译时完成的；（2）不能用于内置基本数据类型间的强制转换
+（3）使用dynamic_cast进行转换时，基类中一定要有虚函数，否则编译不通过；（4）dynamic_cast转换若成功，返回的是指向类的指针或引用；若失败则会返回NULL；
+（5）在类的转换时，在类层次间进行上行转换时，dynamic_cast和static_cast的效果是一样的。在进行下行转换时，dynamic_cast具有类型检查的功能，
+比static_cast更安全。向下转换的成败取决于将要转换的类型，即要强制转换的指针所指向的对象实际类型与将要转换后的类型一定要相同，否则转换失败。
+a. static在转换时不进行安全性检查，完全需要开发者自己考虑, dynamic 在转换的时候会进行安全性检查，如果是指针类型的转换失败返回NULL，如果是引用类型的转换失败，则跑出bad_cast 异常。
+b. static主要是用于值类型之间的转换，而dynamic只能用于对象的指针和引用的cast，dynamic是向下的转换，而且要求父类有虚函数，否则会编译出错。
+https://zhuanlan.zhihu.com/p/151744661?from_voters_page=true
+
+对于“向下转型”有两种情况。
+
+一种是基类指针所指对象是派生类类型的，这种转换是安全的；
+
+另一种是基类指针所指对象为基类类型，在这种情况下dynamic_cast在运行时做检查，转换失败，返回结果为0；
+#include "stdafx.h"
+#include<iostream>
+using namespace std;
+
+class Base
+{
+public:
+    Base(){};
+    virtual void Show(){cout<<"This is Base calss";}
+};
+class Derived:public Base
+{
+public:
+    Derived(){};
+    void Show(){cout<<"This is Derived class";}
+};
+int main()
+{    
+    //这是第一种情况
+    Base* base = new Derived;
+    if(Derived *der= dynamic_cast<Derived*>(base))
+    {
+        cout<<"第一种情况转换成功"<<endl;
+        der->Show();
+        cout<<endl;
+    }
+    //这是第二种情况
+    Base * base1 = new Base;
+    if(Derived *der1 = dynamic_cast<Derived*>(base1))
+    {
+        cout<<"第二种情况转换成功"<<endl;
+        der1->Show();
+    }
+    else 
+    {
+        cout<<"第二种情况转换失败"<<endl;
+    }
+
+    delete(base);
+    delete(base1);
+    system("pause");
+}
+第一种成功,第二种失败
+
+
+
