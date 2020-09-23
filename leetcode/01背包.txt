@@ -5,7 +5,7 @@ int knapsack(vector<int>& w,vector<int>& v,int maxw)
     for(int i=1;i<=n;i++){
         for(int j=1;j<=maxw;j++){
             int value_with_i=0;
-            if(j>=w[i]){
+            if(j>=w[i-1]){
                 value_with_i = v[i-1] + dp[i-1][j-w[i-1]];
             }
             int value_without_i = dp[i-1][j];
@@ -13,4 +13,22 @@ int knapsack(vector<int>& w,vector<int>& v,int maxw)
         }
     }
     return dp[n][maxw];
+}
+
+
+int knapsack(vector<int>& w,vector<int>& v,int maxw)
+{
+    int n = w.size();
+    vector<int> dp(w+1,0); // 辅助空间以W计算
+    for(int i=0;i<n;i++){
+        for(int j=maxw;j>=1;j--){
+            int value_with_i=0;
+            if(j>=w[i]){
+                value_with_i = v[i] + dp[j-w[i]];
+            }
+            int value_without_i = dp[i];
+            dp[j] = max(value_with_i,value_without_i);
+        }
+    }
+    return dp[n-1];
 }
