@@ -1,4 +1,4 @@
-int knapsack(vector<int>& w,vector<int>& v,int maxw)
+﻿int knapsack(vector<int>& w,vector<int>& v,int maxw)
 {
     int n = w.size();
     vector<vector<int>> dp(n+1,vector<int>(maxw+1,0));
@@ -32,3 +32,5 @@ int knapsack(vector<int>& w,vector<int>& v,int maxw)
     }
     return dp[n-1];
 }
+背包各种情况的
+讲解:https://zhuanlan.zhihu.com/p/93857890
