@@ -8,6 +8,7 @@ vector<int> vec{1,2,3}
 4.nullptr
 
 5. 
+// 03的枚举可以隐式转化为int, 这样导致不同的枚举不可以有相同的命名
 enum class ship {
     A,
     B
@@ -37,6 +38,7 @@ class son :public base {
 
 
 7.final
+// 在类后面和函数后面直接 添加final关键字
 // 禁止类被继承 禁止虚函数被重写
 
 8. // default  强制生成默认构造函数
