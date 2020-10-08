@@ -1,0 +1,13 @@
+vector<int> twoSum(vector<int>& nums, int target) {
+    unordered_map<int,int> hmap;
+    for(int i=0;i<nums.size();i++){
+        int tmp = target - nums[i];
+        auto iter = hmap.find(tmp);
+        if(iter == hmap.end()){
+            hmap[nums[i]]= i;
+        }else {
+            return vector<int>{hmap[tmp],i};
+        }
+    }
+    return {};
+}

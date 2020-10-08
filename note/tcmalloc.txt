@@ -1,0 +1,3 @@
+tc_malloc
+通过类似重写的方式 来改变malloc/free的调用
+

@@ -39,6 +39,8 @@
 		<Unit filename="observer.h" />
 		<Unit filename="pointer.h" />
 		<Unit filename="singleton.h" />
+		<Unit filename="strategy.h" />
+		<Unit filename="virtual.h" />
 		<Extensions />
 	</Project>
 </CodeBlocks_project_file>
