@@ -199,7 +199,7 @@ int search(const vector<vector<int>>& matrix,int y,int x,int m,int n)
         int nx = x+arr[i+1];
         if(matrix[ny][nx] > matrix[y][x])
         {
-            ans = max(ans,search(matrix,ny,nx,m,n));
+            ans = max(ans,1+search(matrix,ny,nx,m,n));
         }
     }
     dp_[y][x] = ans;
