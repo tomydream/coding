@@ -1,0 +1,19 @@
+int lengthOfLongestSubstring(string s) {
+    if(s.length()==0) return 0;
+    std::unordered_set<char> temp;
+    int maxLength = 0;
+    int begin = 0;
+    for(int i=0;i<s.length();i++){
+        if(!temp.count(s[i])){
+            temp.insert(s[i]);
+            maxLength = maxLength>temp.size()?maxLength:temp.size();
+        } else {
+            while(temp.count(s[i])){
+                temp.erase(s[begin]);
+                begin++;
+            }
+            temp.insert(s[i]);
+        }
+    }
+    return maxLength;
+}
