@@ -1,0 +1,18 @@
+void recoverTree(TreeNode* root) {
+	TreeNode* pre = nullptr;
+	TreeNode* first = nullptr;
+	TreeNode* second = nullptr;
+	recover(root);
+	swap(first->val,second->val);
+}
+
+void recover(TreeNode* root){
+	if(root == nullptr) return;
+	recover(root->left);
+	if(pre && pre->val > root->val){
+		first = first == nullptr?pre:first;
+		second = root;
+	}
+	pre = root;
+	recover(root->right);
+}
