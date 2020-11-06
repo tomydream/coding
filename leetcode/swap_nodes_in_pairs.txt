@@ -1,0 +1,14 @@
+ListNode* swapPairs(ListNode* head) {
+    ListNode dummy;
+    dummy.next = head;
+    ListNode* cur = &dummy;
+    while(cur->next != nullptr &&cur->next->next != nullptr){
+        ListNode* p1 = cur->next;
+        ListNode* p2 = cur->next->next;
+        cur->next = p2;
+        p1->next = p2->next;
+        p2->next = p1;
+        cur = p1;
+    }
+    return dummy.next;
+}
